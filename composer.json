@@ -48,6 +48,10 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan solo"
+        ],
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
