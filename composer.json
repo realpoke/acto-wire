@@ -52,10 +52,7 @@
             "Composer\\Config::disableProcessTimeout",
             "@php artisan solo"
         ],
-        "test": [
-            "@php artisan config:clear --ansi",
-            "@php artisan test"
-        ]
+        "lint": "pint"
     },
     "extra": {
         "laravel": {
