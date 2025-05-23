@@ -88,19 +88,30 @@
             "Composer\\Config::disableProcessTimeout",
             "@php artisan solo"
         ],
+        "blade": "bun run format",
+        "test:blade": "bun run test:format",
         "lint": "pint",
         "refactor": "rector",
         "fix": [
             "@refactor",
-            "@lint"
+            "@lint",
+            "@front"
+        ],
+        "front": [
+            "@blade"
+        ],
+        "front:test": [
+            "@test:blade"
         ],
         "fix:test": [
             "@fix",
+            "@front",
             "@test:unit",
             "@test:typos",
             "@test:types",
             "@test:type-coverage",
-            "@test:arch"
+            "@test:arch",
+            "@test:front"
         ],
         "test:lint": "pint --test",
         "test:refactor": "rector --dry-run",
@@ -110,6 +121,7 @@
         "test:type-coverage": "pest --parallel --type-coverage --min=100",
         "test:arch": "pest --parallel --filter=arch",
         "test": [
+            "@test:blade",
             "@test:lint",
             "@test:refactor",
             "@test:arch",
