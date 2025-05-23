@@ -1,4 +1,5 @@
-# ActoWire Starter Kit
+# ![logosmall](https://github.com/user-attachments/assets/d4176b6d-5068-412c-b23d-770c431e2334) ActoWire Starter Kit
+
 An opinionated Laravel FATLL stack website base. [Live Demo](https://actowire.laravel.cloud/)
 
 [![tests](https://github.com/realpoke/acto-wire/actions/workflows/tests.yaml/badge.svg)](https://github.com/realpoke/acto-wire/actions/workflows/tests.yaml)
