@@ -16,14 +16,14 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - name: Check if DEPLOY_HOOK is set
+      - name: Check if LARAVEL_CLOUD_API_TOKEN is set
         run: |
-          if [[ -z "${{ secrets.DEPLOY_HOOK }}" ]]; then
-            echo "DEPLOY_HOOK secret is not set"
+          if [[ -z "${{ secrets.LARAVEL_CLOUD_API_TOKEN }}" ]]; then
+            echo "LARAVEL_CLOUD_API_TOKEN secret is not set"
             exit 1
           fi
 
       - name: Trigger Deploy Hook
         run: |
           echo "Deploying to production..."
-          curl --fail -X POST "${{ secrets.DEPLOY_HOOK }}"
+          curl --fail -X POST "${{ secrets.LARAVEL_CLOUD_API_TOKEN }}"
