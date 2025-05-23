@@ -90,8 +90,10 @@
         ],
         "blade": "bun run format",
         "lint:js": "bun run lint:js",
+        "lint:css": "bun run lint:css",
         "test:blade": "bun run test:format",
         "test:lint:js": "bun run lint:js:test",
+        "test:lint:css": "bun run lint:css:test",
         "lint": "pint",
         "refactor": "rector",
         "fix": [
@@ -101,15 +103,16 @@
         ],
         "front": [
             "@blade",
-            "@lint:js"
+            "@lint:js",
+            "@lint:css"
         ],
-        "front:test": [
+        "test:front": [
             "@test:blade",
-            "@test:lint:js"
+            "@test:lint:js",
+            "@test:lint:css"
         ],
         "fix:test": [
             "@fix",
-            "@front",
             "@test:unit",
             "@test:typos",
             "@test:types",
@@ -125,7 +128,7 @@
         "test:type-coverage": "pest --parallel --type-coverage --min=100",
         "test:arch": "pest --parallel --filter=arch",
         "test": [
-            "@front:test",
+            "@test:front",
             "@test:lint",
             "@test:refactor",
             "@test:arch",

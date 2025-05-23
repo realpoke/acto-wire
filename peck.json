@@ -8,7 +8,8 @@
             "js",
             "debugbar",
             "cspell",
-            "eslint"
+            "eslint",
+            "stylelint"
         ],
         "paths": []
     }
