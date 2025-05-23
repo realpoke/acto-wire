@@ -1,11 +1,25 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "realpoke/acto-wire",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Opinionated Laravel starter kit (FluxUI Pro + Alpine.js + TailwindCSS + Livewire) with a clean Action architecture and ready-to-deploy Laravel Cloud pipeline.",
     "keywords": [
         "laravel",
-        "framework"
+        "starter-kit",
+        "boilerplate",
+        "livewire",
+        "tailwindcss",
+        "alpinejs",
+        "fluxui",
+        "fatll",
+        "command-pattern",
+        "action-pattern",
+        "dto",
+        "form-objects",
+        "scaffolding",
+        "php",
+        "webapp",
+        "actowire"
     ],
     "license": "MIT",
     "require": {
