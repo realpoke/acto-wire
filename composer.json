@@ -64,6 +64,14 @@
             "@refactor",
             "@lint"
         ],
+        "fix:test": [
+            "@fix",
+            "@test:unit",
+            "@test:typos",
+            "@test:types",
+            "@test:type-coverage",
+            "@test:arch"
+        ],
         "test:lint": "pint --test",
         "test:refactor": "rector --dry-run",
         "test:unit": "pest --parallel --coverage --exactly=100",
@@ -78,7 +86,8 @@
             "@test:unit",
             "@test:typos",
             "@test:types",
-            "@test:type-coverage"
+            "@test:type-coverage",
+            "@test:arch"
         ]
     },
     "extra": {
