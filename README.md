@@ -15,28 +15,34 @@ An opinionated Laravel FATLL stack website base. [Live Demo](https://actowire.la
 ## Development Setup
 1. Clone the repo:
    - **Using GitHub Template**:
+
      Click "Use this template" on the [GitHub repo page](https://github.com/realpoke/acto-wire) to create a new repository and clone it.
 
    - **Manually**: 
+
      ```sh
      git clone https://github.com/realpoke/acto-wire
      cd acto-wire
      ```
 
    - **Laravel Installer**: 
+
      ```sh
      laravel new --using=realpoke/acto-wire
      cd acto-wire
      ```
     - **Laravel Herd**:
+
       <a href="https://herd.laravel.com/new?starter-kit=realpoke/acto-wire"><img src="https://img.shields.io/badge/Install%20with%20Herd-f55247?logo=laravel&logoColor=white"></a>
 
 2. Set up and run the development environment:
    - **Initial Setup**: First time starting the development environment, use the setup script:
+
      ```sh
      composer setup
      ```
    - **Start the development environment**: Run this to start the development environment:
+
      ```sh
      composer dev
      ```
@@ -50,6 +56,7 @@ An opinionated Laravel FATLL stack website base. [Live Demo](https://actowire.la
    - `FLUX_LICENSE_KEY` → Your Flux Pro license key
 
 3. Push your code:
+
    ```sh
    git remote add origin https://github.com/your-username/your-repo.git
    git branch -M main
@@ -63,9 +70,10 @@ An opinionated Laravel FATLL stack website base. [Live Demo](https://actowire.la
 
 3. Simply push to the `production` branch on Github.
 
-**NOTE** You might need to setup custom deploy commands, here are some examples of deplyment settings on Laravel Cloud:
+**NOTE** You might want to setup custom deploy commands, here are some examples on Laravel Cloud:
 
 **Build Commands:**
+
 ```sh
 composer config http-basic.composer.fluxui.dev my@email.com my-super-secret-flux-key
 composer install --no-dev
@@ -76,12 +84,13 @@ bun run build
 ```
 
 **Deploy Commands:**
+
 ```sh
 php artisan migrate --force
 php artisan optimize
 ```
 
-- **Auto-deploy**: Once the tests pass and the code is committed to the `production` branch, the auto-deployment pipeline triggers and pushes the code to Laravel Cloud.
+**Auto-deploy**: Once the tests pass and the code is committed to the `production` branch, the auto-deployment pipeline triggers and pushes the code to Laravel Cloud.
 
 ## Action Pattern / Command Pattern with Dependency Injection
 This project leverages the **Action Pattern** (Command Pattern) extensively, using **Dependency Injection (DI)** to promote clean, scalable, and maintainable code.
