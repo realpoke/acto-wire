@@ -39,7 +39,7 @@ class DummyForm extends BaseForm
         // Provide a minimal stub Component instance
         $this->component = new class extends Component
         {
-            public function render() {}
+            public function render(): void {}
         };
         // Assign a dummy propertyName
         $this->propertyName = 'form';
@@ -60,7 +60,7 @@ class InvalidForm extends BaseForm
     {
         $this->component = new class extends Component
         {
-            public function render() {}
+            public function render(): void {}
         };
         $this->propertyName = 'form';
     }
