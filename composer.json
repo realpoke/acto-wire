@@ -54,7 +54,11 @@
             "@php artisan solo"
         ],
         "lint": "pint",
-        "refactor": "rector"
+        "refactor": "rector",
+        "fix": [
+            "@refactor",
+            "@lint"
+        ]
     },
     "extra": {
         "laravel": {
