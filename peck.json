@@ -6,7 +6,9 @@
             "filesystems",
             "favicon",
             "js",
-            "debugbar"
+            "debugbar",
+            "cspell",
+            "eslint"
         ],
         "paths": []
     }

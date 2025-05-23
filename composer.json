@@ -89,7 +89,9 @@
             "@php artisan solo"
         ],
         "blade": "bun run format",
+        "lint:js": "bun run lint:js",
         "test:blade": "bun run test:format",
+        "test:lint:js": "bun run lint:js:test",
         "lint": "pint",
         "refactor": "rector",
         "fix": [
@@ -98,10 +100,12 @@
             "@front"
         ],
         "front": [
-            "@blade"
+            "@blade",
+            "@lint:js"
         ],
         "front:test": [
-            "@test:blade"
+            "@test:blade",
+            "@test:lint:js"
         ],
         "fix:test": [
             "@fix",
@@ -121,7 +125,7 @@
         "test:type-coverage": "pest --parallel --type-coverage --min=100",
         "test:arch": "pest --parallel --filter=arch",
         "test": [
-            "@test:blade",
+            "@front:test",
             "@test:lint",
             "@test:refactor",
             "@test:arch",

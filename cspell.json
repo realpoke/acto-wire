@@ -1,0 +1,11 @@
+{
+    "language": "en",
+    "dictionaries": ["softwareTerms"],
+    "words": [
+        "Livewire",
+        "TailwindCSS",
+        "Laravel"
+    ],
+    "ignorePaths": ["vendor", "node_modules"]
+}
+
