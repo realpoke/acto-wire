@@ -6,5 +6,10 @@ parameters:
 
     paths:
         - app/
+        - tests/
 
     level: max
+
+    excludePaths:
+        analyse:
+            - tests/ArchTests.php
