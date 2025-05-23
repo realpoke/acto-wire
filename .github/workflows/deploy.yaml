@@ -1,0 +1,29 @@
+name: deploy
+
+on:
+  workflow_run:
+    workflows: 
+      - tests
+    types:
+      - completed
+    branches:
+      - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Production
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Check if DEPLOY_HOOK is set
+        run: |
+          if [[ -z "${{ secrets.DEPLOY_HOOK }}" ]]; then
+            echo "DEPLOY_HOOK secret is not set"
+            exit 1
+          fi
+
+      - name: Trigger Deploy Hook
+        run: |
+          echo "Deploying to production..."
+          curl --fail -X POST "${{ secrets.DEPLOY_HOOK }}"
