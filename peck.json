@@ -9,7 +9,8 @@
             "debugbar",
             "cspell",
             "eslint",
-            "stylelint"
+            "stylelint",
+            "dto"
         ],
         "paths": []
     }

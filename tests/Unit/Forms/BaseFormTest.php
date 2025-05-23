@@ -99,7 +99,7 @@ class BaseFormTest extends TestCase
         $form->dto();
     }
 
-    public function test_fill_from_prefills_properties_from_array_model_or_data(): void
+    public function test_fill_from_pre_fills_properties_from_array_model_or_data(): void
     {
         $form = new DummyForm();
 

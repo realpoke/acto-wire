@@ -107,7 +107,7 @@ class BaseActionTest extends TestCase
         NoResultAction::run();
     }
 
-    public function test_generic_exception_is_rethrown_and_rolls_back(): void
+    public function test_generic_exception_is_re_thrown_and_rolls_back(): void
     {
         DB::shouldReceive('beginTransaction')->once();
         DB::shouldReceive('transactionLevel')->andReturn(2);
