@@ -1,0 +1,68 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - production
+  pull_request:
+    branches:
+      - develop
+      - main
+      - production
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    environment: Testing
+    strategy:
+      fail-fast: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Aspell
+        shell: bash
+        run: |
+          sudo apt-get update && sudo apt-get install -y aspell aspell-en
+
+      - name: Cache Dependencies PHP
+        id: php-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: dependencies-php-composer-${{ hashFiles('composer.lock') }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          tools: composer:v2
+          coverage: pcov
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Bun Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install PHP dependencies
+        if: steps.php-cache.outputs.cache-hit != 'true'
+        run: |
+          composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
+          composer install --no-interaction --no-progress --ansi
+
+      - name: Build Bun dependencies
+        run: bun run build
+
+      - name: Prepare Laravel
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Tests
+        run: composer test
