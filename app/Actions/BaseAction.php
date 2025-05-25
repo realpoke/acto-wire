@@ -4,9 +4,9 @@ namespace App\Actions;
 
 use App\Exceptions\ActionFailedException;
 use App\Exceptions\InvalidActionException;
-use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * BaseAction with transaction management, error handling, and auto-injection.
@@ -24,9 +24,9 @@ abstract class BaseAction
      *
      * @param  mixed  ...$payload  Parameters to pass to execute(), auto-injected by the container.
      *
-     * @throws Exception
+     * @throws Throwable
      */
-    public function __invoke(...$payload): static
+    public function __invoke(mixed ...$payload): static
     {
         DB::beginTransaction();
 
@@ -34,7 +34,7 @@ abstract class BaseAction
             $this->execute(...$payload);
         } catch (ActionFailedException $e) {
             $this->setFailed($e->getMessage());
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->rollBack();
             throw $e;
         }
@@ -52,18 +52,31 @@ abstract class BaseAction
     /**
      * Child implements business logic here, invoking setSuccessful() or throwing ActionFailedException.
      *
-     * @param  mixed  ...$payload
      *
      * @throws ActionFailedException
      */
-    abstract protected function execute(...$payload): static;
+    abstract protected function execute(mixed ...$payload): static;
 
     /**
      * Run the action via Laravel container to auto-inject __invoke() parameters.
      */
-    public static function run(...$payload): static
+    public static function run(mixed ...$payload): static
     {
-        return app()->call([app(static::class), '__invoke'], $payload);
+        // Resolve the action instance
+        /** @var static $instance */
+        $instance = app(static::class);
+
+        // Prepare a callable array for __invoke
+        $callback = $instance->__invoke(...);
+
+        // Treat payload as named parameters for the container
+        /** @var array<string, mixed> $parameters */
+        $parameters = $payload;
+
+        /** @var static $action */
+        $action = app()->call($callback, $parameters);
+
+        return $action;
     }
 
     /**

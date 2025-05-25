@@ -77,6 +77,12 @@ class BaseFormTest extends TestCase
         );
     }
 
+    public function test_rules_returns_empty_array_if_dto_class_invalid(): void
+    {
+        $form = new InvalidForm();
+        $this->assertSame([], $form->rules());
+    }
+
     public function test_dto_returns_strongly_typed_data_object(): void
     {
         $form = new DummyForm();

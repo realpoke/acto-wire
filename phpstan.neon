@@ -5,11 +5,10 @@ includes:
 parameters:
 
     paths:
-        - app/
-        - tests/
+        - app
+        - config
+        - bootstrap
+        - database/factories
+        - routes
 
     level: max
-
-    excludePaths:
-        analyse:
-            - tests/ArchTests.php

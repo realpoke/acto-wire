@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Sleep::fake(
-            Sleep::fake()
+            App::runningUnitTests()
         );
 
         Vite::useAggressivePrefetching();

@@ -15,6 +15,8 @@ use LogicException;
  * │  Livewire  │  validate  │     DTO       │
  * │  Form obj  │───────────▶│  (domain)     │
  * └────────────┘            └───────────────┘
+ *
+ * @implements \Illuminate\Contracts\Support\Arrayable<string, mixed>
  */
 abstract class BaseForm extends Form implements Arrayable
 {
@@ -34,13 +36,19 @@ abstract class BaseForm extends Form implements Arrayable
     /**
      * If the child form doesn’t override `rules()`,
      * fall back to DTO::rules() so you keep rules in one place.
+     *
+     * @return array<string, mixed>
      */
     public function rules(): array
     {
-        // child form can still define its own rules() override
-        return is_subclass_of(static::$dtoClass, BaseData::class)
-            ? forward_static_call([static::$dtoClass, 'rules'])
-            : [];
+        if (! is_subclass_of(static::$dtoClass, BaseData::class)) {
+            return [];
+        }
+
+        /** @var array<string, mixed> $rules */
+        $rules = forward_static_call([static::$dtoClass, 'rules']);
+
+        return $rules;
     }
 
     /* ---------------------------------------------------------------------
@@ -57,9 +65,12 @@ abstract class BaseForm extends Form implements Arrayable
             throw new LogicException('BaseForm::$dtoClass must extend App\\Data\\BaseData');
         }
 
-        $validated = $this->validate();   // Livewire 3 validate() :contentReference[oaicite:0]{index=0}
+        $validated = $this->validate();   // Livewire 3 validate()
 
-        return forward_static_call([static::$dtoClass, 'from'], $validated);
+        /** @var BaseData $dto */
+        $dto = forward_static_call([static::$dtoClass, 'from'], $validated);
+
+        return $dto;
     }
 
     /* ---------------------------------------------------------------------
@@ -68,6 +79,8 @@ abstract class BaseForm extends Form implements Arrayable
 
     /**
      * Pre-fill the form from a Model, DTO, or plain array.
+     *
+     * @param  Model|BaseData|array<string, mixed>  $source
      */
     public function fillFrom(Model|BaseData|array $source): void
     {
@@ -86,6 +99,8 @@ abstract class BaseForm extends Form implements Arrayable
 
     /**
      * Satisfy Arrayable / jsonSerialize.
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
@@ -94,6 +109,9 @@ abstract class BaseForm extends Form implements Arrayable
             ->all();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();

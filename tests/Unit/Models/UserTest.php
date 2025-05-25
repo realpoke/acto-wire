@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -47,7 +48,7 @@ class UserTest extends TestCase
             'email_verified_at' => '2025-05-23 12:34:56',
         ]);
 
-        $this->assertInstanceOf(Carbon::class, $user->email_verified_at);
+        $this->assertInstanceOf(CarbonImmutable::class, $user->email_verified_at);
         $this->assertTrue($user->email_verified_at->eq(Carbon::parse('2025-05-23 12:34:56')));
     }
 
