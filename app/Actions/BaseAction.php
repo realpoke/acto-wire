@@ -11,10 +11,16 @@ use Throwable;
 /**
  * BaseAction with transaction management, error handling, and auto-injection.
  *
- * Concrete actions implement execute() and return $this or throw ActionFailedException.
+ * Concrete actions implement execute() and can opt into database transactions
+ * by setting the protected $useTransaction property to true.
  */
 abstract class BaseAction
 {
+    /**
+     * Set to true in a child class to wrap the action in a database transaction.
+     */
+    protected bool $useTransaction = false;
+
     private ?bool $success = null;
 
     private ?string $errorMessage = null;
@@ -28,7 +34,9 @@ abstract class BaseAction
      */
     public function __invoke(mixed ...$payload): static
     {
-        DB::beginTransaction();
+        if ($this->useTransaction) {
+            DB::beginTransaction();
+        }
 
         try {
             $this->execute(...$payload);
@@ -108,7 +116,9 @@ abstract class BaseAction
      */
     protected function setSuccessful(): static
     {
-        DB::commit();
+        if ($this->useTransaction) {
+            DB::commit();
+        }
         $this->success = true;
 
         return $this;
@@ -138,7 +148,7 @@ abstract class BaseAction
      */
     private function rollBack(): void
     {
-        if (DB::transactionLevel() > 1) {
+        if ($this->useTransaction && DB::transactionLevel() > 1) {
             DB::rollBack();
         }
     }
