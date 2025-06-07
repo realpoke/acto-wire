@@ -24317,6 +24317,48 @@ namespace Illuminate\View {
             }
     }
 
+namespace App\Livewire\Landing {
+    /**
+     * 
+     *
+     */
+    class LandingPage {
+        /**
+         * 
+         *
+         * @see \Flux\FluxManager::bootModal()
+         * @param mixed $name
+         * @static 
+         */
+        public static function modal($name)
+        {
+            return \App\Livewire\Landing\LandingPage::modal($name);
+        }
+
+            }
+    }
+
+namespace App\Livewire\Auth {
+    /**
+     * 
+     *
+     */
+    class LoginPage {
+        /**
+         * 
+         *
+         * @see \Flux\FluxManager::bootModal()
+         * @param mixed $name
+         * @static 
+         */
+        public static function modal($name)
+        {
+            return \App\Livewire\Auth\LoginPage::modal($name);
+        }
+
+            }
+    }
+
 
 namespace  {
     class App extends \Illuminate\Support\Facades\App {}

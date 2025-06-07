@@ -9,12 +9,10 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-// Dummy actions to test BaseAction behavior
 class SucceedAction extends BaseAction
 {
     protected function execute(...$payload): static
     {
-        // No DB operations here, just mark success
         return $this->setSuccessful();
     }
 }
@@ -39,14 +37,10 @@ class NoResultAction extends BaseAction
 {
     protected function execute(...$payload): static
     {
-        // neither success nor failure
-        return $this;
+        return $this; // Neither success nor failure
     }
 }
 
-/**
- * A dummy action that throws a generic Exception.
- */
 class NormalExceptionAction extends BaseAction
 {
     protected function execute(...$payload): static
@@ -55,66 +49,121 @@ class NormalExceptionAction extends BaseAction
     }
 }
 
+class SucceedWithTransactionAction extends SucceedAction
+{
+    protected bool $useTransaction = true;
+}
+
+class FailWithTransactionAction extends FailAction
+{
+    protected bool $useTransaction = true;
+}
+
+class ExceptionWithTransactionAction extends ExceptionAction
+{
+    protected bool $useTransaction = true;
+}
+
+class NoResultWithTransactionAction extends NoResultAction
+{
+    protected bool $useTransaction = true;
+}
+
+class NormalExceptionWithTransactionAction extends NormalExceptionAction
+{
+    protected bool $useTransaction = true;
+}
+
 class BaseActionTest extends TestCase
 {
-    public function test_run_commits_and_returns_successful(): void
+    public function test_successful_action_does_not_use_transaction_by_default(): void
     {
-        // No nested transaction; direct run() should commit
-        DB::shouldReceive('beginTransaction')->once();
-        DB::shouldReceive('commit')->once();
+        DB::shouldReceive('beginTransaction')->never();
+        DB::shouldReceive('commit')->never();
+        DB::shouldReceive('rollBack')->never();
 
         $result = SucceedAction::run();
 
         $this->assertTrue($result->successful());
-        $this->assertFalse($result->failed());
     }
 
-    public function test_run_set_failed_and_records_error(): void
+    public function test_failed_action_does_not_use_transaction_by_default(): void
     {
-        DB::shouldReceive('beginTransaction')->once();
-        // Ensure rollBack guard allows rollback
-        DB::shouldReceive('transactionLevel')->andReturn(2);
-        DB::shouldReceive('rollBack')->once();
+        DB::shouldReceive('beginTransaction')->never();
+        DB::shouldReceive('rollBack')->never();
 
         $result = FailAction::run();
 
-        $this->assertFalse($result->successful());
         $this->assertTrue($result->failed());
         $this->assertSame('fail', $result->getErrorMessage());
     }
 
-    public function test_exception_action_sets_failed(): void
+    public function test_exception_action_does_not_use_transaction_by_default(): void
     {
-        DB::shouldReceive('beginTransaction')->once();
-        DB::shouldReceive('transactionLevel')->andReturn(2);
-        DB::shouldReceive('rollBack')->once();
+        DB::shouldReceive('beginTransaction')->never();
+        DB::shouldReceive('rollBack')->never();
 
         $result = ExceptionAction::run();
 
-        $this->assertFalse($result->successful());
         $this->assertTrue($result->failed());
         $this->assertSame('exception fail', $result->getErrorMessage());
     }
 
-    public function test_no_result_action_throws_invalid_action_exception(): void
+    public function test_successful_action_with_transaction_commits(): void
     {
         DB::shouldReceive('beginTransaction')->once();
-        DB::shouldReceive('transactionLevel')->andReturn(2);
-        DB::shouldReceive('rollBack')->once();
+        DB::shouldReceive('commit')->once();
+        DB::shouldReceive('rollBack')->never();
 
-        $this->expectException(InvalidActionException::class);
+        $result = SucceedWithTransactionAction::run();
 
-        NoResultAction::run();
+        $this->assertTrue($result->successful());
     }
 
-    public function test_generic_exception_is_re_thrown_and_rolls_back(): void
+    public function test_failed_action_with_transaction_rolls_back(): void
+    {
+        DB::shouldReceive('beginTransaction')->once();
+        DB::shouldReceive('transactionLevel')->andReturn(2); // Indicate a transaction is active
+        DB::shouldReceive('rollBack')->once();
+        DB::shouldReceive('commit')->never();
+
+        $result = FailWithTransactionAction::run();
+
+        $this->assertTrue($result->failed());
+        $this->assertSame('fail', $result->getErrorMessage());
+    }
+
+    public function test_exception_action_with_transaction_rolls_back(): void
     {
         DB::shouldReceive('beginTransaction')->once();
         DB::shouldReceive('transactionLevel')->andReturn(2);
         DB::shouldReceive('rollBack')->once();
 
+        $result = ExceptionWithTransactionAction::run();
+
+        $this->assertTrue($result->failed());
+        $this->assertSame('exception fail', $result->getErrorMessage());
+    }
+
+    public function test_no_result_action_with_transaction_rolls_back_and_throws(): void
+    {
+        $this->expectException(InvalidActionException::class);
+
+        DB::shouldReceive('beginTransaction')->once();
+        DB::shouldReceive('transactionLevel')->andReturn(2);
+        DB::shouldReceive('rollBack')->once();
+
+        NoResultWithTransactionAction::run();
+    }
+
+    public function test_generic_exception_with_transaction_rolls_back_and_re_throws(): void
+    {
         $this->expectException(Exception::class);
 
-        NormalExceptionAction::run();
+        DB::shouldReceive('beginTransaction')->once();
+        DB::shouldReceive('transactionLevel')->andReturn(2);
+        DB::shouldReceive('rollBack')->once();
+
+        NormalExceptionWithTransactionAction::run();
     }
 }
